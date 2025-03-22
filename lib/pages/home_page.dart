@@ -106,6 +106,7 @@ class _HomePageState extends State<HomePage> {
                         focusNode: _focusNode,
                         controller: _controller,
                         decoration: InputDecoration(
+                          hintText: "Write your todo here",
                           border: OutlineInputBorder(),
                         ),
                       ),
