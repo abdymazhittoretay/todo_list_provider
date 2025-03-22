@@ -11,6 +11,7 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   final TextEditingController _controller = TextEditingController();
+  final TextEditingController _updateController = TextEditingController();
   final FocusNode _focusNode = FocusNode();
 
   @override
@@ -39,11 +40,56 @@ class _HomePageState extends State<HomePage> {
                             return ListTile(
                               contentPadding: EdgeInsets.only(bottom: 16.0),
                               title: Text(todos[index]),
-                              trailing: IconButton(
-                                onPressed: () {
-                                  value.removeToDo(index);
-                                },
-                                icon: Icon(Icons.delete),
+                              trailing: Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  IconButton(
+                                    onPressed: () {
+                                      _updateController.text = todos[index];
+                                      showDialog(
+                                        context: context,
+                                        builder: (context) {
+                                          return AlertDialog(
+                                            content: TextField(
+                                              controller: _updateController,
+                                            ),
+                                            actions: [
+                                              TextButton(
+                                                onPressed: () {
+                                                  _updateController.clear();
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text("Cancel"),
+                                              ),
+                                              TextButton(
+                                                onPressed: () {
+                                                  if (_updateController
+                                                      .text
+                                                      .isNotEmpty) {
+                                                    value.updateToDo(
+                                                      index,
+                                                      _updateController.text,
+                                                    );
+                                                    _updateController.clear();
+                                                  }
+                                                  Navigator.pop(context);
+                                                },
+                                                child: Text("Update"),
+                                              ),
+                                            ],
+                                          );
+                                        },
+                                      );
+                                    },
+                                    icon: Icon(Icons.edit),
+                                  ),
+                                  IconButton(
+                                    onPressed: () {
+                                      value.removeToDo(index);
+                                    },
+                                    icon: Icon(Icons.delete),
+                                  ),
+                                ],
                               ),
                             );
                           },
