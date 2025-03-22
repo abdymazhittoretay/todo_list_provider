@@ -21,7 +21,32 @@ class _HomePageState extends State<HomePage> {
           padding: const EdgeInsets.symmetric(horizontal: 16.0),
           child: Column(
             children: [
-              Expanded(child: SizedBox()),
+              Expanded(
+                child: Consumer<TodosModel>(
+                  builder: (context, value, child) {
+                    List<String> todos = value.todos;
+                    if (todos.isEmpty) {
+                      return Center(child: Text("There are no todos yet."));
+                    } else {
+                      return ListView.builder(
+                        itemCount: todos.length,
+                        itemBuilder: (context, index) {
+                          return ListTile(
+                            contentPadding: EdgeInsets.only(bottom: 16.0),
+                            title: Text(todos[index]),
+                            trailing: IconButton(
+                              onPressed: () {
+                                value.removeToDo(index);
+                              },
+                              icon: Icon(Icons.delete),
+                            ),
+                          );
+                        },
+                      );
+                    }
+                  },
+                ),
+              ),
               SizedBox(height: 16.0),
               Row(
                 children: [
