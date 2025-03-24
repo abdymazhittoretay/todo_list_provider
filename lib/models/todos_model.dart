@@ -30,4 +30,9 @@ class TodosModel extends ChangeNotifier {
     _deletedTodos.removeAt(index);
     notifyListeners();
   }
+
+  void deleteForever(int index) {
+    _deletedTodos.removeAt(index);
+    notifyListeners();
+  }
 }

@@ -17,20 +17,35 @@ class _DeletedTodosPageState extends State<DeletedTodosPage> {
       body: Consumer<TodosModel>(
         builder: (context, value, child) {
           List deletedTodos = value.deletedTodos;
-          return ListView.builder(
-            itemCount: deletedTodos.length,
-            itemBuilder: (context, index) {
-              return ListTile(
-                title: Text(deletedTodos[index][1]),
-                trailing: IconButton(
-                  onPressed: () {
-                    value.recoverDeleted(index);
-                  },
-                  icon: Icon(Icons.restore),
-                ),
-              );
-            },
-          );
+          if (deletedTodos.isEmpty) {
+            return Center(child: Text("Nothing to restore!"));
+          } else {
+            return ListView.builder(
+              itemCount: deletedTodos.length,
+              itemBuilder: (context, index) {
+                return ListTile(
+                  title: Text(deletedTodos[index][1]),
+                  trailing: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          value.recoverDeleted(index);
+                        },
+                        icon: Icon(Icons.restore),
+                      ),
+                      IconButton(
+                        onPressed: () {
+                          value.deleteForever(index);
+                        },
+                        icon: Icon(Icons.delete_forever),
+                      ),
+                    ],
+                  ),
+                );
+              },
+            );
+          }
         },
       ),
     );
