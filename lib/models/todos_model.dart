@@ -27,6 +27,7 @@ class TodosModel extends ChangeNotifier {
 
   void recoverDeleted(int index) {
     _todos.insert(_deletedTodos[index][0], _deletedTodos[index][1]);
+    _deletedTodos.removeAt(index);
     notifyListeners();
   }
 }

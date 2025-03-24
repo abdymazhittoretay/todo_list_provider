@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list_provider/models/todos_model.dart';
+import 'package:todo_list_provider/pages/deleted_todos_page.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -21,7 +22,20 @@ class _HomePageState extends State<HomePage> {
         _focusNode.unfocus();
       },
       child: Scaffold(
-        appBar: AppBar(title: Text("Todos")),
+        appBar: AppBar(
+          title: Text("Todos"),
+          actions: [
+            IconButton(
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (context) => DeletedTodosPage()),
+                );
+              },
+              icon: Icon(Icons.list_alt),
+            ),
+          ],
+        ),
         body: SafeArea(
           child: Padding(
             padding: const EdgeInsets.symmetric(horizontal: 16.0),
