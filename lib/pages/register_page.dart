@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_list_provider/pages/home_page.dart';
+import 'package:todo_list_provider/pages/login_page.dart';
 import 'package:todo_list_provider/services/auth.dart';
 
 class RegisterPage extends StatefulWidget {
@@ -63,6 +64,7 @@ class _RegisterPageState extends State<RegisterPage> {
                   border: OutlineInputBorder(),
                 ),
               ),
+              SizedBox(height: 12.0),
               TextField(
                 controller: _confirmPasswordController,
                 obscureText: true,
@@ -87,6 +89,16 @@ class _RegisterPageState extends State<RegisterPage> {
                   }
                 },
                 child: Text("Register"),
+              ),
+              SizedBox(height: 12.0),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                  );
+                },
+                child: Text("Already have an account? Login!"),
               ),
             ],
           ),

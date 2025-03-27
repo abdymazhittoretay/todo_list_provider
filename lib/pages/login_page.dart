@@ -1,6 +1,7 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:todo_list_provider/pages/home_page.dart';
+import 'package:todo_list_provider/pages/register_page.dart';
 import 'package:todo_list_provider/services/auth.dart';
 
 class LoginPage extends StatefulWidget {
@@ -46,6 +47,7 @@ class _LoginPageState extends State<LoginPage> {
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               TextField(
+                controller: _emailController,
                 decoration: InputDecoration(
                   hintText: "Your email",
                   border: OutlineInputBorder(),
@@ -53,6 +55,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               SizedBox(height: 12.0),
               TextField(
+                controller: _passwordController,
                 obscureText: true,
                 decoration: InputDecoration(
                   hintText: "Your password",
@@ -74,6 +77,16 @@ class _LoginPageState extends State<LoginPage> {
                   }
                 },
                 child: Text("Login"),
+              ),
+              SizedBox(height: 12.0),
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (context) => RegisterPage()),
+                  );
+                },
+                child: Text("Do not have an account? Register!"),
               ),
             ],
           ),

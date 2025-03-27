@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list_provider/firebase_options.dart';
 import 'package:todo_list_provider/models/todos_model.dart';
-import 'package:todo_list_provider/pages/home_page.dart';
 import 'package:todo_list_provider/pages/login_page.dart';
 
 void main() async {
