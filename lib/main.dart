@@ -4,6 +4,7 @@ import 'package:provider/provider.dart';
 import 'package:todo_list_provider/firebase_options.dart';
 import 'package:todo_list_provider/models/todos_model.dart';
 import 'package:todo_list_provider/pages/home_page.dart';
+import 'package:todo_list_provider/pages/login_page.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -21,6 +22,6 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(debugShowCheckedModeBanner: false, home: HomePage());
+    return MaterialApp(debugShowCheckedModeBanner: false, home: LoginPage());
   }
 }
