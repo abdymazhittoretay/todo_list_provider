@@ -78,7 +78,8 @@ class _RegisterPageState extends State<RegisterPage> {
                 onPressed: () {
                   if (_emailController.text.isNotEmpty &&
                       _passwordController.text.isNotEmpty &&
-                      _passwordController.text == _emailController.text) {
+                      _passwordController.text ==
+                          _confirmPasswordController.text) {
                     register(
                       context,
                       _emailController.text,
@@ -86,6 +87,7 @@ class _RegisterPageState extends State<RegisterPage> {
                     );
                     _emailController.clear();
                     _passwordController.clear();
+                    _confirmPasswordController.clear();
                   }
                 },
                 child: Text("Register"),

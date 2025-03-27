@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import 'package:todo_list_provider/models/todos_model.dart';
 import 'package:todo_list_provider/pages/deleted_todos_page.dart';
+import 'package:todo_list_provider/pages/login_page.dart';
+import 'package:todo_list_provider/services/auth.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -24,6 +26,18 @@ class _HomePageState extends State<HomePage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text("Todos"),
+          leading: IconButton(
+            onPressed: () async {
+              await Auth().signOut();
+              if (context.mounted) {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => LoginPage()),
+                );
+              }
+            },
+            icon: Icon(Icons.exit_to_app),
+          ),
           actions: [
             IconButton(
               onPressed: () {
