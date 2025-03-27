@@ -1,9 +1,9 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
-import 'package:todo_list_provider/models/todos_model.dart';
 import 'package:todo_list_provider/pages/deleted_todos_page.dart';
 import 'package:todo_list_provider/pages/login_page.dart';
 import 'package:todo_list_provider/services/auth.dart';
+import 'package:todo_list_provider/services/firestore_service.dart';
 
 class HomePage extends StatefulWidget {
   const HomePage({super.key});
@@ -56,72 +56,83 @@ class _HomePageState extends State<HomePage> {
             child: Column(
               children: [
                 Expanded(
-                  child: Consumer<TodosModel>(
-                    builder: (context, value, child) {
-                      List<String> todos = value.todos;
-                      if (todos.isEmpty) {
-                        return Center(child: Text("There are no todos yet."));
-                      } else {
+                  child: StreamBuilder<QuerySnapshot>(
+                    stream: FirestoreService().readTodos(),
+                    builder: (context, snapshot) {
+                      if (snapshot.hasData && snapshot.data!.docs.isNotEmpty) {
+                        List todos = snapshot.data!.docs;
                         return ListView.builder(
                           itemCount: todos.length,
                           itemBuilder: (context, index) {
-                            return ListTile(
-                              contentPadding: EdgeInsets.only(bottom: 16.0),
-                              title: Text(todos[index]),
-                              trailing: Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  IconButton(
-                                    onPressed: () {
-                                      _updateController.text = todos[index];
-                                      showDialog(
-                                        context: context,
-                                        builder: (context) {
-                                          return AlertDialog(
-                                            content: TextField(
-                                              controller: _updateController,
-                                            ),
-                                            actions: [
-                                              TextButton(
-                                                onPressed: () {
-                                                  _updateController.clear();
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text("Cancel"),
+                            final DocumentSnapshot document = todos[index];
+                            final String docID = document.id;
+                            final Map<String, dynamic> data =
+                                document.data() as Map<String, dynamic>;
+                            final todo = data["todo"];
+                            if (data["user"] == Auth().currentUser!.email) {
+                              return ListTile(
+                                contentPadding: EdgeInsets.only(bottom: 16.0),
+                                title: Text(todo),
+                                trailing: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    IconButton(
+                                      onPressed: () {
+                                        _updateController.text = todo;
+                                        showDialog(
+                                          context: context,
+                                          builder: (context) {
+                                            return AlertDialog(
+                                              content: TextField(
+                                                controller: _updateController,
                                               ),
-                                              TextButton(
-                                                onPressed: () {
-                                                  if (_updateController
-                                                      .text
-                                                      .isNotEmpty) {
-                                                    value.updateToDo(
-                                                      index,
-                                                      _updateController.text,
-                                                    );
+                                              actions: [
+                                                TextButton(
+                                                  onPressed: () {
                                                     _updateController.clear();
-                                                  }
-                                                  Navigator.pop(context);
-                                                },
-                                                child: Text("Update"),
-                                              ),
-                                            ],
-                                          );
-                                        },
-                                      );
-                                    },
-                                    icon: Icon(Icons.edit),
-                                  ),
-                                  IconButton(
-                                    onPressed: () {
-                                      value.removeToDo(index);
-                                    },
-                                    icon: Icon(Icons.delete),
-                                  ),
-                                ],
-                              ),
-                            );
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("Cancel"),
+                                                ),
+                                                TextButton(
+                                                  onPressed: () {
+                                                    if (_updateController
+                                                        .text
+                                                        .isNotEmpty) {
+                                                      FirestoreService()
+                                                          .updateTodo(
+                                                            docID,
+                                                            _updateController
+                                                                .text,
+                                                          );
+                                                      _updateController.clear();
+                                                    }
+                                                    Navigator.pop(context);
+                                                  },
+                                                  child: Text("Update"),
+                                                ),
+                                              ],
+                                            );
+                                          },
+                                        );
+                                      },
+                                      icon: Icon(Icons.edit),
+                                    ),
+                                    IconButton(
+                                      onPressed: () {
+                                        FirestoreService().deleteTodo(docID);
+                                      },
+                                      icon: Icon(Icons.delete),
+                                    ),
+                                  ],
+                                ),
+                              );
+                            }
+                            return null;
                           },
                         );
+                      } else {
+                        return Center(child: Text("There are no todos!"));
                       }
                     },
                   ),
@@ -145,10 +156,7 @@ class _HomePageState extends State<HomePage> {
                       child: IconButton(
                         onPressed: () {
                           if (_controller.text.isNotEmpty) {
-                            Provider.of<TodosModel>(
-                              context,
-                              listen: false,
-                            ).addToDo(_controller.text);
+                            FirestoreService().addTodo(_controller.text);
                             _focusNode.unfocus();
                             _controller.clear();
                           }

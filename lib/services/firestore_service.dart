@@ -9,9 +9,15 @@ class FirestoreService {
   Future<void> addTodo(String todo) {
     return _todos.add({
       "user": Auth().currentUser!.email,
-      "todo": [todo],
+      "todo": todo,
       "timestamp": Timestamp.now(),
     });
+  }
+
+  Stream<QuerySnapshot> readTodos() {
+    final todosSnapshots =
+        _todos.orderBy("timestamp", descending: true).snapshots();
+    return todosSnapshots;
   }
 
   Future<void> updateTodo(String docID, String newTodo) {
